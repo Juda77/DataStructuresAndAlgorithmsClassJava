@@ -28,16 +28,58 @@ public class IntTreeProblems {
      * (The root node is treated as having depth 1.)
      */
     public static int depthSum(IntTree tree) {
-        // TODO replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+
+        return dfs(tree.overallRoot, 1);
+
     }
+
+    private static int dfs(IntTreeNode root, int depth) {
+
+        if (root == null) {
+            return 0;
+        } else {
+
+            return depth * root.data + dfs(root.left, depth + 1) + dfs(root.right, depth + 1);
+
+        }
+
+    }
+
 
     /**
      * Removes all leaf nodes from the given tree.
      */
     public static void removeLeaves(IntTree tree) {
-        // TODO replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+
+        if (tree.overallRoot == null) {
+            return;
+        } else if (tree.overallRoot.left == null && tree.overallRoot.right == null) {
+            tree.overallRoot = null;
+        }
+        removeLeaves(tree.overallRoot);
+    }
+
+    private static void removeLeaves(IntTreeNode tree) {
+        if (tree == null) {
+            return;
+        } else {
+
+            IntTreeNode left = tree.left;
+            boolean leftChildIsALeaf = left != null && left.left == null && left.right == null;
+            if (leftChildIsALeaf) {
+                tree.left = null;
+            }
+
+            IntTreeNode right = tree.right;
+            boolean rightChildIsALeaf = right != null && right.left == null && right.right == null;
+            if (rightChildIsALeaf) {
+                tree.right = null;
+            }
+
+            removeLeaves(tree.left);
+            removeLeaves(tree.right);
+
+        }
     }
 
     /**
@@ -45,7 +87,34 @@ public class IntTreeProblems {
      * (The resulting tree is still a BST.)
      */
     public static void trim(IntTree tree, int min, int max) {
-        // TODO replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+
+        tree.overallRoot = traverse(tree.overallRoot, min, max);
+
     }
+
+    private static IntTreeNode traverse(IntTreeNode node, int min, int max) {
+
+        if (node == null) {
+            return null;
+        } else if (node.data < min) { //push ourselves closer to range
+            return traverse(node.right, min, max);
+        } else if (max < node.data) {
+            return traverse(node.left, min, max);
+        } else {
+            //if we are in range, trim the left and right subtrees
+            node.left = traverse(node.left, min, max);
+            node.right = traverse(node.right, min, max);
+            return node;
+        }
+
+
+    }
+
+
+
+
+
+
+
+
 }
