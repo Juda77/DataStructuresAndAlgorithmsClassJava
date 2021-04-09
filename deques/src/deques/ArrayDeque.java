@@ -53,9 +53,11 @@ public class ArrayDeque<T> extends AbstractDeque<T> {
         if (size == 0) {
             return null;
         }
+
         front = increment(front, data.length);
         T result = data[front];
         data[front] = null;
+
         size -= 1;
         if (needsDownsize()) {
             resize(data.length / 2);
@@ -94,7 +96,7 @@ public class ArrayDeque<T> extends AbstractDeque<T> {
             int counter = 0;
             int i = increment(front, data.length);
             while (counter < size) {
-                output.append(data[i]).append(" ");
+                output.append(data[i] + " ");
                 i = increment(i, data.length);
                 counter += 1;
             }
@@ -109,12 +111,14 @@ public class ArrayDeque<T> extends AbstractDeque<T> {
     @SuppressWarnings("unchecked")
     private void resize(int capacity) {
         T[] newData = (T[]) new Object[capacity];
-        int i = increment(front, size);
+
+        //int i = increment(front, size);
+        int i = increment(front, data.length);
         for (int newIndex = 0; newIndex < size; newIndex += 1) {
             newData[newIndex] = data[i];
-            i = increment(i, size);
+            i = increment(i, data.length);
         }
-        front = newData.length - 1;
+        front = decrement(0, capacity);
         back = size;
         data = newData;
     }
