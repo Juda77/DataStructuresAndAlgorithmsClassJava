@@ -13,7 +13,7 @@ public class MapProblems {
      * Returns true if any string appears at least 3 times in the given list; false otherwise.
      */
     public static boolean contains3(List<String> list) {
-
+        // word, occurances
         Map<String, Integer> occurances = new HashMap<>();
         for (int i = 0; i < list.size(); i++) {
 
