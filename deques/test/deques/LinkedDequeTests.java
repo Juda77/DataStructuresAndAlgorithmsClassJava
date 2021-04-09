@@ -1,6 +1,7 @@
 package deques;
 
 public class LinkedDequeTests extends BaseDequeTests {
+
     public static <T> LinkedDequeAssert<T> assertThat(LinkedDeque<T> deque) {
         return new LinkedDequeAssert<>(deque);
     }
@@ -16,5 +17,4 @@ public class LinkedDequeTests extends BaseDequeTests {
         assertThat((LinkedDeque<T>) deque).isValid();
     }
 
-    // You can write additional tests here if you only want them to run for LinkedDequeTests and not ArrayDequeTests
 }
