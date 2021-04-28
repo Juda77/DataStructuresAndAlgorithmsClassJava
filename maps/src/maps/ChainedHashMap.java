@@ -110,6 +110,7 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
 
         //determine the chain to insert at
         int index = getIndex(key);
+
         if (chains[index] == null) { //if the index currently has no chain, make one
             chains[index] = createChain(this.chainCapacity);
             chainCount++;
@@ -121,6 +122,9 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
             resize();
         }
 
+        if (chains[index].containsKey(key)) {
+            chains[index].remove(key);
+        }
 
         return chains[index].put(key, value);
 
@@ -159,9 +163,7 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
 
     @Override
     public void clear() {
-        for (int i = 0; i < chains.length; i++) {
-            chains[i] = null;
-        }
+        chains = createArrayOfChains(chainCapacity);
     }
 
     @Override
