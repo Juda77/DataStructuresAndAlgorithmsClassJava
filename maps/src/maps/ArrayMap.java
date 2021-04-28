@@ -94,7 +94,9 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
         }
 
         for (int i = 0; i < size; i++) {
-            if (entries[i].getKey() == null && key == null || entries[i].getKey().equals(key)) {
+            if (entries[i] == null) {
+                continue;
+            } else if (entries[i].getKey() == null && key == null || entries[i].getKey().equals(key)) {
                 V oldValue = entries[i].getValue();
                 entries[i] = new SimpleEntry<K, V>(key, value);
                 return oldValue;
