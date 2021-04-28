@@ -177,6 +177,7 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
 
     @Override
     public void clear() {
+        size = 0;
         this.chains = createArrayOfChains(this.chainCount);
     }
 
