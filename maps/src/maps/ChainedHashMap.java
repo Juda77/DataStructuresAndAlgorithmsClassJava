@@ -1,17 +1,18 @@
 package maps;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
-
+import java.util.NoSuchElementException;
 /**
  * @see AbstractIterableMap
  * @see Map
  */
 public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
     // TODO: define reasonable default values for each of the following three fields
-    private static final double DEFAULT_RESIZING_LOAD_FACTOR_THRESHOLD = 0;
-    private static final int DEFAULT_INITIAL_CHAIN_COUNT = 0;
-    private static final int DEFAULT_INITIAL_CHAIN_CAPACITY = 0;
+    private static final double DEFAULT_RESIZING_LOAD_FACTOR_THRESHOLD = 1.0;
+    private static final int DEFAULT_INITIAL_CHAIN_COUNT = 11;
+    private static final int DEFAULT_INITIAL_CHAIN_CAPACITY = 11;
 
     /*
     Warning:
@@ -21,6 +22,10 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
     AbstractIterableMap<K, V>[] chains;
 
     // You're encouraged to add extra fields (and helper methods) though!
+    private double resizingLoadFactorThreshold;
+    private int chainCount;
+    private int chainCapacity;
+    private int size;
 
     /**
      * Constructs a new ChainedHashMap with default resizing load factor threshold,
@@ -40,8 +45,11 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
      *                             Must be > 0.
      */
     public ChainedHashMap(double resizingLoadFactorThreshold, int initialChainCount, int chainInitialCapacity) {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        this.resizingLoadFactorThreshold = resizingLoadFactorThreshold;
+        this.chainCount = initialChainCount;
+        this.chainCapacity = chainInitialCapacity;
+        this.size = 0;
+        chains = createArrayOfChains(this.chainCount);
     }
 
     /**
@@ -70,40 +78,106 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
         return new ArrayMap<>(initialSize);
     }
 
+    public int getIndex(Object key) {
+        int hashCode = 0;
+
+        //compute hash code
+        if (key != null) {
+            hashCode = key.hashCode();
+        }
+
+        if (hashCode < 0) {
+            hashCode *= -1;
+        }
+
+        int index = hashCode % chains.length;
+        return index;
+    }
+
     @Override
     public V get(Object key) {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        //compute hash code
+        int index = getIndex(key);
+        if (chains[index] == null) {
+            return null;
+        }
+        return chains[index].get(key);
+
     }
 
     @Override
     public V put(K key, V value) {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+
+        //determine the chain to insert at
+        int index = getIndex(key);
+        if (chains[index] == null) { //if the index currently has no chain, make one
+            chains[index] = createChain(this.chainCapacity);
+            chainCount++;
+        }
+
+        size++;
+        double loadFactor = size / chains.length;
+        if (loadFactor >= resizingLoadFactorThreshold) {
+            resize();
+        }
+
+
+        return chains[index].put(key, value);
+
+    }
+
+    private void resize() {
+
+        AbstractIterableMap<K, V>[] biggerChains = createArrayOfChains(chains.length * 2);
+
+        for (int i = 0; i < chains.length; i++) {
+            biggerChains[i] = chains[i];
+        }
+
+        chains = biggerChains;
     }
 
     @Override
     public V remove(Object key) {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+
+        //determine chain that the key would be in
+        int index = getIndex(key);
+        if (chains[index] == null) {
+            return null; //no chain at index
+        } else {
+            size--;
+            V entry = chains[index].remove(key);
+
+            if (chains[index].size() == 0) {
+                chains[index] = null;
+                chainCount--;
+            }
+            return entry;
+        }
+
     }
 
     @Override
     public void clear() {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        for (int i = 0; i < chains.length; i++) {
+            chains[i] = null;
+        }
     }
 
     @Override
     public boolean containsKey(Object key) {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        int index = getIndex(key);
+        if (chains[index] == null) {
+            return false;
+        }
+
+        return chains[index].containsKey(key);
+
     }
 
     @Override
     public int size() {
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return size;
     }
 
     @Override
@@ -112,34 +186,77 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
         return new ChainedHashMapIterator<>(this.chains);
     }
 
-    // TODO: after you implement the iterator, remove this toString implementation
-    // Doing so will give you a better string representation for assertion errors the debugger.
-    @Override
-    public String toString() {
-        return super.toString();
-    }
-
     /*
     See the assignment webpage for tips and restrictions on implementing this iterator.
      */
     private static class ChainedHashMapIterator<K, V> implements Iterator<Map.Entry<K, V>> {
         private AbstractIterableMap<K, V>[] chains;
         // You may add more fields and constructor parameters
+        int currChain = 0;
+        Iterator<Map.Entry<K, V>> iteratorForChain;
+        boolean chainsIsEmpty;
 
         public ChainedHashMapIterator(AbstractIterableMap<K, V>[] chains) {
+
             this.chains = chains;
+            getToNextChain();
+            if (currChain != chains.length) {
+                chainsIsEmpty = false;
+                iteratorForChain = chains[currChain].iterator();
+            } else {
+                chainsIsEmpty = true;
+            }
+
+
         }
 
         @Override
         public boolean hasNext() {
-            // TODO: replace this with your code
-            throw new UnsupportedOperationException("Not implemented yet.");
+
+            if (chainsIsEmpty) {
+                return false;
+            } else if (iteratorForChain.hasNext()){
+                return true;
+            } else {
+                currChain++;
+                getToNextChain();
+                if (currChain >= chains.length) {
+                    return false;
+                } else {
+                    iteratorForChain = chains[currChain].iterator();
+                    return true;
+                }
+            }
+
+
         }
 
         @Override
         public Map.Entry<K, V> next() {
-            // TODO: replace this with your code
-            throw new UnsupportedOperationException("Not implemented yet.");
+
+            if (!this.hasNext()) {
+                throw new NoSuchElementException();
+            } else if (iteratorForChain.hasNext()) {
+                return iteratorForChain.next();
+            } else {
+                getToNextChain();
+                if (currChain == chains.length) {
+                    iteratorForChain= null;
+                    return null;
+                } else {
+                    iteratorForChain = chains[currChain].iterator();
+                    return iteratorForChain.next();
+                }
+
+            }
+
+        }
+
+        private void getToNextChain() {
+
+            while (currChain < chains.length && chains[currChain] == null) {
+                currChain++;
+            }
         }
     }
 }
