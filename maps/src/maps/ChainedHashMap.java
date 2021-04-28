@@ -107,7 +107,13 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
     @Override
     public V put(K key, V value) {
 
-        size++;
+        V val = null;
+        if (this.containsKey(key)) {
+            val = this.get(key);
+            this.remove(key);
+        }
+
+        size++; //increment size for inserting the new element
         double loadFactor = size / chains.length;
         if (loadFactor >= resizingLoadFactorThreshold) {
             resize();
@@ -118,10 +124,12 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
 
         if (chains[index] == null) { //if the index currently has no chain, make one
             chains[index] = createChain(this.chainCapacity);
+
             chainCount++;
         }
 
-        return chains[index].put(key, value);
+        chains[index].put(key, value);
+        return val;
 
     }
 
