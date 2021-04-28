@@ -133,8 +133,20 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
 
         AbstractIterableMap<K, V>[] biggerChains = createArrayOfChains(chains.length * 2);
 
-        for (int i = 0; i < chains.length; i++) {
-            biggerChains[i] = chains[i];
+        Iterator<Map.Entry<K, V>> iter = iterator();
+        while (iter.hasNext()) {
+            Map.Entry<K, V> entry = iter.next();
+            K key = entry.getKey();
+            V value = entry.getValue();
+            //determine the chain to insert at
+            int index = getIndex(key);
+
+            if (chains[index] == null) { //if the index currently has no chain, make one
+                chains[index] = createChain(this.chainCapacity);
+                chainCount++;
+            }
+            chains[index].put(key, value);
+
         }
 
         chains = biggerChains;
@@ -236,7 +248,7 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
         public Map.Entry<K, V> next() {
 
             if (!this.hasNext()) {
-                throw new NoSuchElementException();
+                return null;
             } else if (iteratorForChain.hasNext()) {
                 return iteratorForChain.next();
             } else {
