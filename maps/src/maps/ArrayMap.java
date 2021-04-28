@@ -78,6 +78,9 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
     public V get(Object key) {
 
         for (int i = 0; i < size; i++) {
+            if (entries[i] == null) {
+                continue;
+            }
             K curr = entries[i].getKey();
             if (curr == null && curr == key ||curr.equals(key)) {
                 return entries[i].getValue();
@@ -126,7 +129,9 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
 
         V val = null;
         for (int i = 0; i < size; i++) {
-            if (entries[i].getKey().equals(key)) {
+            if (entries[i] == null) {
+                continue;
+            } else if (entries[i].getKey() == null && key == null || entries[i].getKey().equals(key)) {
                 val = entries[i].getValue();
                 entries[i] = null;
                 if (i < size - 1) {
@@ -153,6 +158,9 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
     @Override
     public boolean containsKey(Object key) {
         for (int i = 0; i < size; i++) {
+            if (entries[i] == null) {
+                continue;
+            }
             if (entries[i].getKey() == null && key == null || entries[i].getKey().equals(key)) {
                 return true;
             }
@@ -189,9 +197,9 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
 
             if (currIndex == entries.length || entries[currIndex] == null) {
                 return false;
-            } else {
-                return true;
             }
+                return true;
+
         }
 
         @Override

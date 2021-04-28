@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
  * @see Map
  */
 public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
-    // TODO: define reasonable default values for each of the following three fields
+
     private static final double DEFAULT_RESIZING_LOAD_FACTOR_THRESHOLD = 1.0;
     private static final int DEFAULT_INITIAL_CHAIN_COUNT = 11;
     private static final int DEFAULT_INITIAL_CHAIN_CAPACITY = 11;
@@ -216,7 +216,7 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
 
             if (chainsIsEmpty) {
                 return false;
-            } else if (iteratorForChain.hasNext()){
+            } else if (iteratorForChain.hasNext()) {
                 return true;
             } else {
                 currChain++;
