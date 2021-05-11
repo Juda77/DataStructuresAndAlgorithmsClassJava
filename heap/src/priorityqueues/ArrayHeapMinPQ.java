@@ -72,10 +72,13 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         int parentIndex = (currIndex - 1) / 2;
 
         boolean parentIsBiggerThanChild = items.get(parentIndex).getPriority() > newItem.getPriority();
-        while (parentIsBiggerThanChild && currIndex > 0) {
+        while (parentIsBiggerThanChild) {
             swap(parentIndex, currIndex);
             currIndex = parentIndex;
             parentIndex = (currIndex - 1) / 2;
+            if (parentIndex < 0) {
+                break;
+            }
             parentIsBiggerThanChild = items.get(parentIndex).getPriority() > newItem.getPriority();
         }
 
