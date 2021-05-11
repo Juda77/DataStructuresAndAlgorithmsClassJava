@@ -113,11 +113,12 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         PriorityNode<T> min = items.get(0);
         itemSet.remove(min.getItem());
         itemIndexMap.remove(min.getItem());
-        size--;
+
 
         //if there are no elements left, just move on. Else, do heapify
-        if (size == 0) {
-            items.remove(0);
+        if (size == 1) {
+            items.remove(size - 1);
+            size--;
             return min.getItem();
         }
 
@@ -125,9 +126,11 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         PriorityNode<T> lastElement = items.get(size - 1);
         items.set(0, lastElement);
         items.remove(size - 1);
+        size--;
 
         //percolate/heapify down as needed. Heapfify down will also add the item to the item-index hash map
         heapifyDown(0);
+
 
         //return the min item
         return min.getItem();
