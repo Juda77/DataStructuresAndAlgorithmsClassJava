@@ -6,12 +6,14 @@ public class MyMinPQTests {
 
     public static void main(String[] args) {
         ArrayHeapMinPQ<Integer> testQ = new ArrayHeapMinPQ<>();
-        testQ.add(2,2);
-        System.out.println(testQ.size());
+        testQ.add(1,1);
         testQ.add(3,3);
-        System.out.println(testQ.size());
         testQ.removeMin();
-        System.out.println(testQ.size());
+        testQ.add(5,5);
+        testQ.removeMin();
+
+        testQ.printHeap();
+
     }
 
 }

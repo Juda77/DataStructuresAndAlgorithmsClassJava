@@ -121,7 +121,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
 
         //put the last element at the top
         PriorityNode<T> lastElement = items.get(insertIndex - 1);
-        items.set(insertIndex - 1, null); //remove the last element
+        items.remove(size() - 1); //remove the last element
         insertIndex--;
         items.set(0, lastElement);
 
@@ -210,5 +210,13 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
     @Override
     public int size() {
         return size;
+    }
+
+    public void printHeap() {
+        print(items.toString());
+    }
+
+    private void print(String output) {
+        System.out.println(output);
     }
 }
