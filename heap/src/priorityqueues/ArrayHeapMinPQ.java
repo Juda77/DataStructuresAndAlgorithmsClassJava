@@ -51,7 +51,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
          */
 
         //start by checking if the heap already contains the item
-        if (this.contains(item)) {
+        if (itemSet.contains(item)) {
             throw new IllegalArgumentException();
         }
 
@@ -59,12 +59,10 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         PriorityNode<T> newItem = new PriorityNode<>(item, priority);
         items.add(newItem);
         itemSet.add(item);
-
-        //percolate/heapify up as needed
-        heapifyUp(newItem, insertIndex);
-
-        insertIndex++;
         size++;
+
+        //percolate/heapify up as needed. Heapify up will also add the item to the item-index hash map
+        heapifyUp(newItem, size - 1);
 
     }
 
@@ -94,7 +92,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
     @Override
     public T peekMin() {
 
-        //if there are no items, just return null
+        //if there are no items, throw an exception
         if (size == 0) {
             throw new NoSuchElementException();
         }
@@ -106,29 +104,34 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
     @Override
     public T removeMin() {
 
-        //if there are no items in the heap, just return null
+        //if there are no elements left, throw an exception
         if (size == 0) {
             throw new NoSuchElementException();
         }
 
-        //get the min by taking the top
+        //get the top element and remove it from the hash tables
         PriorityNode<T> min = items.get(0);
-
-        //remove the min from the set and hashmap
         itemSet.remove(min.getItem());
         itemIndexMap.remove(min.getItem());
         size--;
 
-        //put the last element at the top
-        PriorityNode<T> lastElement = items.get(insertIndex - 1);
-        items.remove(size() - 1); //remove the last element
-        insertIndex--;
-        items.set(0, lastElement);
+        //if there are no elements left, just move on. Else, do heapify
+        if (size == 0) {
+            return min.getItem();
+        }
 
-        //heapify the last element down to the correct spot
+        //get the last element and move it to the top. Also remove the last element from the end
+        PriorityNode<T> lastElement = items.get(size - 1);
+        items.set(0, lastElement);
+        items.remove(size - 1);
+        itemSet.add(lastElement.getItem());
+
+        //percolate/heapify down as needed. Heapfify down will also add the item to the item-index hash map
         heapifyDown(0);
 
+        //return the min item
         return min.getItem();
+
     }
 
     public void heapifyDown(int currentIndex) {
