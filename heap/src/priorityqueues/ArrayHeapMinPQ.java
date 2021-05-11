@@ -51,7 +51,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
          */
 
         //start by checking if the heap already contains the item
-        if (itemSet.contains(item)) {
+        if (contains(item)) {
             throw new IllegalArgumentException();
         }
 
@@ -117,6 +117,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
 
         //if there are no elements left, just move on. Else, do heapify
         if (size == 0) {
+            items.remove(0);
             return min.getItem();
         }
 
@@ -124,7 +125,6 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         PriorityNode<T> lastElement = items.get(size - 1);
         items.set(0, lastElement);
         items.remove(size - 1);
-        itemSet.add(lastElement.getItem());
 
         //percolate/heapify down as needed. Heapfify down will also add the item to the item-index hash map
         heapifyDown(0);

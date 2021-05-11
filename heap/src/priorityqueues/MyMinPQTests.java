@@ -8,9 +8,13 @@ public class MyMinPQTests {
         ArrayHeapMinPQ<Integer> testQ = new ArrayHeapMinPQ<>();
         testQ.add(1,1);
         testQ.add(3,3);
+        testQ.add(2,2);
         testQ.removeMin();
-        testQ.add(5,5);
+        testQ.add(1,1);
+        testQ.add(4,4);
         testQ.removeMin();
+        testQ.removeMin();
+
 
         testQ.printHeap();
 
