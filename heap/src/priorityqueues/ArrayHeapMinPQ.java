@@ -198,9 +198,10 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         items.get(currIndex).setPriority(priority);
 
         //remove the previous item-index mapping
-        itemIndexMap.remove(item);
+        //itemIndexMap.remove(item);
 
         heapifyUp(currIndex);
+        print("index: " + itemIndexMap.get(item));
         heapifyDown(itemIndexMap.get(item));
 
     }
