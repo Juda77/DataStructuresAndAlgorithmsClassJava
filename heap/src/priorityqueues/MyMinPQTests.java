@@ -10,7 +10,7 @@ public class MyMinPQTests {
         testQ.add(0,0);
         testQ.add(100,100);
         testQ.add(50,50);
-        testQ.removeMin();
+        testQ.changePriority(0, 500);
 
 
         testQ.printHeap();

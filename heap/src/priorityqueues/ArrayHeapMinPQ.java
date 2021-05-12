@@ -194,6 +194,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         //access the item's index that we want using the hash map
         //then percolate/heapify up or down as needed
         int currIndex = itemIndexMap.get(item);
+        items.get(currIndex).setPriority(priority);
 
         //remove the previous item-index mapping
         itemIndexMap.remove(item);
@@ -202,11 +203,23 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         int leftChildIndex = currIndex * 2 + 1;
         int rightChildIndex = currIndex * 2 + 2;
 
-        PriorityNode<T> newItem = new PriorityNode<>(item, priority);
+        boolean parentIsBiggerThanCurr = items.get(parentIndex).getPriority() > items.get(currIndex).getPriority();
+        boolean childIsSmallerThanCurr;
+        double leftPriority = Integer.MAX_VALUE;
+        double rightPriority = Integer.MAX_VALUE;
+
+        if (leftChildIndex < size) {
+            leftPriority = items.get(leftChildIndex).getPriority();
+        }
+        if (rightChildIndex < size) {
+            rightPriority = items.get(rightChildIndex).getPriority();
+        }
+        childIsSmallerThanCurr = items.get(currIndex).getPriority() > leftPriority
+            || items.get(currIndex).getPriority() > rightPriority;
 
         //determine if we need to heapify upwards
-        if (items.get(parentIndex).getPriority() > items.get(currIndex).getPriority()) {
-            heapifyUp(newItem, currIndex);
+        if (parentIsBiggerThanCurr) {
+            heapifyUp(items.get(currIndex), currIndex);
         } else if (items.get(parentIndex).getPriority() < items.get(currIndex).getPriority()) {
             heapifyDown(currIndex);
         }
