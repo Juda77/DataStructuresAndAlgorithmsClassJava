@@ -10,6 +10,8 @@ public class MyMinPQTests {
             testQ.add(i, i);
         }
 
+        testQ.changePriority(1,20);
+
 
 
 

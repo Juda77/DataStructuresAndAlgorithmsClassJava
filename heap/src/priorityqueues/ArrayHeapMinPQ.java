@@ -86,7 +86,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         }
 
         //add the item to the hash map
-        //itemIndexMap.put(items.get(currIndex).getItem(), currIndex);
+        itemIndexMap.put(items.get(currIndex).getItem(), currIndex);
     }
 
     @Override
@@ -191,7 +191,6 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
     @Override
     public void changePriority(T item, double priority) {
 
-
         //if the heap doesn't contain the item we want, just return
         if (!itemSet.contains(item)) {
             throw new NoSuchElementException();
@@ -201,12 +200,12 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         //then percolate/heapify up or down as needed
         int currIndex = itemIndexMap.get(item);
 
-        print("itemIndexMap: " + itemIndexMap.toString());
         //set the new priority
         items.get(currIndex).setPriority(priority);
 
         heapifyUp(currIndex);
         heapifyDown(itemIndexMap.get(item));
+        print("itemIndexMap: " + itemIndexMap.toString());
 
     }
 
