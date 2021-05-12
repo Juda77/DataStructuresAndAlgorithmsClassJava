@@ -62,14 +62,14 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         size++;
 
         //percolate/heapify up as needed. Heapify up will also add the item to the item-index hash map
-        heapifyUp(newItem, size - 1);
+        heapifyUp(size - 1);
 
     }
 
-    public void heapifyUp(PriorityNode<T> newItem, int currIndex) {
+    public void heapifyUp(int currIndex) {
         int parentIndex = (currIndex - 1) / 2;
 
-        boolean parentIsBiggerThanChild = items.get(parentIndex).getPriority() > newItem.getPriority();
+        boolean parentIsBiggerThanChild = items.get(parentIndex).getPriority() > items.get(currIndex).getPriority();
         while (parentIsBiggerThanChild) {
             swap(parentIndex, currIndex);
             currIndex = parentIndex;
@@ -77,11 +77,11 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
             if (parentIndex < 0) {
                 break;
             }
-            parentIsBiggerThanChild = items.get(parentIndex).getPriority() > newItem.getPriority();
+            parentIsBiggerThanChild = items.get(parentIndex).getPriority() > items.get(currIndex).getPriority();
         }
 
         //add the item to the hash map
-        itemIndexMap.put(newItem.getItem(), currIndex);
+        itemIndexMap.put(items.get(currIndex).getItem(), currIndex);
     }
 
     @Override
@@ -200,35 +200,8 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         //remove the previous item-index mapping
         itemIndexMap.remove(item);
 
-        heapifyUp(items.get(currIndex), currIndex);
+        heapifyUp(currIndex);
         heapifyDown(itemIndexMap.get(item));
-        /*
-        int parentIndex = (currIndex - 1) / 2;
-        int leftChildIndex = currIndex * 2 + 1;
-        int rightChildIndex = currIndex * 2 + 2;
-
-        boolean parentIsBiggerThanCurr = items.get(parentIndex).getPriority() > items.get(currIndex).getPriority();
-        boolean childIsSmallerThanCurr;
-        double leftPriority = Integer.MAX_VALUE;
-        double rightPriority = Integer.MAX_VALUE;
-
-        if (leftChildIndex < size) {
-            leftPriority = items.get(leftChildIndex).getPriority();
-        }
-        if (rightChildIndex < size) {
-            rightPriority = items.get(rightChildIndex).getPriority();
-        }
-        childIsSmallerThanCurr = items.get(currIndex).getPriority() > leftPriority
-            || items.get(currIndex).getPriority() > rightPriority;
-
-        //determine if we need to heapify upwards
-        if (parentIsBiggerThanCurr) {
-            heapifyUp(items.get(currIndex), currIndex);
-        } else if (childIsSmallerThanCurr) {
-            heapifyDown(currIndex);
-        }
-        */
-
 
     }
 

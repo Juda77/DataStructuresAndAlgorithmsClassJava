@@ -11,6 +11,9 @@ public class MyMinPQTests {
         }
 
         testQ.changePriority(2, 5);
+        testQ.removeMin();
+        testQ.removeMin();
+
 
 
 
