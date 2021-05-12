@@ -194,11 +194,15 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         //access the item's index that we want using the hash map
         //then percolate/heapify up or down as needed
         int currIndex = itemIndexMap.get(item);
+
         items.get(currIndex).setPriority(priority);
 
         //remove the previous item-index mapping
         itemIndexMap.remove(item);
 
+        heapifyUp(items.get(currIndex), currIndex);
+        heapifyDown(itemIndexMap.get(item));
+        /*
         int parentIndex = (currIndex - 1) / 2;
         int leftChildIndex = currIndex * 2 + 1;
         int rightChildIndex = currIndex * 2 + 2;
@@ -223,6 +227,8 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         } else if (childIsSmallerThanCurr) {
             heapifyDown(currIndex);
         }
+        */
+
 
     }
 
