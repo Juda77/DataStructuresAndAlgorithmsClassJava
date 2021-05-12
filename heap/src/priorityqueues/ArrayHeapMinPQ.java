@@ -40,7 +40,9 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
     private void swap(int a, int b) {
         PriorityNode<T> temp = items.get(a);
         items.set(a, items.get(b));
+        itemIndexMap.put(items.get(b).getItem(), a);
         items.set(b, temp);
+        itemIndexMap.put(temp.getItem(), b);
     }
 
     @Override
@@ -67,21 +69,24 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
     }
 
     public void heapifyUp(int currIndex) {
+
         int parentIndex = (currIndex - 1) / 2;
 
         boolean parentIsBiggerThanChild = items.get(parentIndex).getPriority() > items.get(currIndex).getPriority();
         while (parentIsBiggerThanChild) {
+
             swap(parentIndex, currIndex);
             currIndex = parentIndex;
             parentIndex = (currIndex - 1) / 2;
             if (parentIndex < 0) {
                 break;
             }
+
             parentIsBiggerThanChild = items.get(parentIndex).getPriority() > items.get(currIndex).getPriority();
         }
 
         //add the item to the hash map
-        itemIndexMap.put(items.get(currIndex).getItem(), currIndex);
+        //itemIndexMap.put(items.get(currIndex).getItem(), currIndex);
     }
 
     @Override
@@ -186,6 +191,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
     @Override
     public void changePriority(T item, double priority) {
 
+
         //if the heap doesn't contain the item we want, just return
         if (!itemSet.contains(item)) {
             throw new NoSuchElementException();
@@ -195,13 +201,11 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         //then percolate/heapify up or down as needed
         int currIndex = itemIndexMap.get(item);
 
+        print("itemIndexMap: " + itemIndexMap.toString());
+        //set the new priority
         items.get(currIndex).setPriority(priority);
 
-        //remove the previous item-index mapping
-        //itemIndexMap.remove(item);
-
         heapifyUp(currIndex);
-        print("index: " + itemIndexMap.get(item));
         heapifyDown(itemIndexMap.get(item));
 
     }
