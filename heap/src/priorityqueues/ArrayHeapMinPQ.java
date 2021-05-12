@@ -205,7 +205,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
 
         heapifyUp(currIndex);
         heapifyDown(itemIndexMap.get(item));
-        print("itemIndexMap: " + itemIndexMap.toString());
+        //print("itemIndexMap: " + itemIndexMap.toString());
 
     }
 
