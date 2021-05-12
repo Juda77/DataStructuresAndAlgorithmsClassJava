@@ -220,7 +220,7 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         //determine if we need to heapify upwards
         if (parentIsBiggerThanCurr) {
             heapifyUp(items.get(currIndex), currIndex);
-        } else if (items.get(parentIndex).getPriority() < items.get(currIndex).getPriority()) {
+        } else if (childIsSmallerThanCurr) {
             heapifyDown(currIndex);
         }
 
