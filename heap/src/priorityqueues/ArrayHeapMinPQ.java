@@ -144,8 +144,8 @@ public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
         boolean childIsSmallerThanCurrent;
         double leftPriority = Integer.MAX_VALUE;
         double rightPriority = Integer.MAX_VALUE;
-        int leftIndex = 1;
-        int rightIndex = 2;
+        int leftIndex = currentIndex * 2 + 1;
+        int rightIndex = currentIndex * 2 + 2;
         if (leftIndex < this.size()) {
             leftPriority = items.get(leftIndex).getPriority();
         }
